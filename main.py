@@ -12,6 +12,7 @@ from src.quadtree import QuadTree, Point, Rectangle
 from src.risk import RiskCalculator
 
 
+
 def load_earthquake_data(filepath):
     """Load earthquake data from CSV using Pandas."""
     print(f"Loading earthquake data from {filepath}...")
@@ -20,12 +21,21 @@ def load_earthquake_data(filepath):
     # Remove any empty rows
     df = df.dropna(how='all')
     
-    # Validate required columns exist
-    required_cols = ['latitude', 'longitude', 'magnitude', 'depth', 'intensity', 
-                     'frequency', 'fault_distance', 'volcano_distance', 'plate_zone']
+
+    # Validate required columns exist (simplified for enhanced calculation)
+    required_cols = ['latitude', 'longitude', 'magnitude', 'depth', 'intensity', 'frequency', 'plate_zone']
+    optional_cols = ['region_name']  # Optional region name column
+    
     missing_cols = [col for col in required_cols if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing required columns: {missing_cols}")
+    
+    # Handle optional region_name column
+    if 'region_name' not in df.columns:
+        print("Warning: 'region_name' column not found. Adding default region names.")
+        df['region_name'] = 'Unknown Region'
+    else:
+        print(f"Region names loaded: {len(df['region_name'].unique())} unique regions")
     
     print(f"Loaded {len(df)} earthquake records")
     print(f"\nData columns: {list(df.columns)}")
@@ -34,28 +44,67 @@ def load_earthquake_data(filepath):
     return df
 
 
-def calculate_risk_scores(df):
-    """Calculate risk scores for all data points."""
-    print("\nCalculating risk scores...")
+def load_geological_data(faults_filepath, volcanoes_filepath):
+    """Load geological data (faults and volcanoes) from CSV files."""
+    print(f"\nLoading geological data...")
+    
+    # Load faults data
+    faults_df = pd.read_csv(faults_filepath)
+    print(f"Loaded {len(faults_df)} fault records")
+    
+    # Load volcanoes data
+    volcanoes_df = pd.read_csv(volcanoes_filepath)
+    print(f"Loaded {len(volcanoes_df)} volcano records")
+    
+    print(f"\nFaults data columns: {list(faults_df.columns)}")
+    print(f"Volcanoes data columns: {list(volcanoes_df.columns)}")
+    
+    return faults_df, volcanoes_df
+
+
+
+def calculate_risk_scores(df, faults_data=None, volcanoes_data=None):
+    """Calculate risk scores for all data points using enhanced geological data."""
+    print("\nCalculating enhanced risk scores with geological data...")
     risk_scores = []
+    fault_distances = []
+    volcano_distances = []
     
     for idx, row in df.iterrows():
-        score = RiskCalculator.calculate_risk_score(
+        # Use enhanced risk calculation with geological data
+        score = RiskCalculator.calculate_enhanced_risk_score(
             magnitude=row['magnitude'],
             depth=row['depth'],
             intensity=row['intensity'],
             frequency=row['frequency'],
-            fault_distance=row['fault_distance'],
-            volcano_distance=row['volcano_distance'],
+            lat=row['latitude'],
+            lon=row['longitude'],
+            faults_data=faults_data,
+            volcanoes_data=volcanoes_data,
             plate_zone=row['plate_zone']
         )
         risk_scores.append(score)
+        
+        # Calculate and store distances for analysis
+        fault_dist = RiskCalculator.find_nearest_fault_distance(
+            row['latitude'], row['longitude'], faults_data
+        )
+        volcano_dist = RiskCalculator.find_nearest_volcano_distance(
+            row['latitude'], row['longitude'], volcanoes_data
+        )
+        fault_distances.append(fault_dist)
+        volcano_distances.append(volcano_dist)
     
     df['risk_score'] = risk_scores
     df['risk_level'] = df['risk_score'].apply(RiskCalculator.get_risk_level)
+    df['fault_distance_km'] = fault_distances
+    df['volcano_distance_km'] = volcano_distances
     
-    print(f"Risk score statistics:")
+    print(f"Enhanced risk score statistics:")
     print(df['risk_score'].describe())
+    print(f"\nAverage distance to nearest fault: {sum(fault_distances)/len(fault_distances):.2f} km")
+    print(f"Average distance to nearest volcano: {sum(volcano_distances)/len(volcano_distances):.2f} km")
+    
     return df
 
 
@@ -187,7 +236,9 @@ def compare_performance(df, qt, num_queries=100):
     return results
 
 
-def visualize_risk_map(df, qt, output_file='risk_map.png'):
+
+
+def visualize_risk_map(df, qt, output_file='output/visualizations/risk_map.png'):
     """Visualize earthquake risk map with Matplotlib."""
     print(f"\nGenerating risk visualization...")
     
@@ -289,7 +340,9 @@ def visualize_risk_map(df, qt, output_file='risk_map.png'):
     return fig
 
 
-def visualize_quadtree_structure(qt, df, output_file='quadtree_structure.png'):
+
+
+def visualize_quadtree_structure(qt, df, output_file='output/visualizations/quadtree_structure.png'):
     """Visualize QuadTree structure."""
     print(f"\nGenerating QuadTree structure visualization...")
     
@@ -360,18 +413,168 @@ def visualize_quadtree_structure(qt, df, output_file='quadtree_structure.png'):
     return fig
 
 
+
+
+
+
+def visualize_regional_analysis(df, regions_df, regional_analysis, output_file='output/visualizations/regional_analysis.png'):
+    """Visualize regional risk analysis for Pulau Jawa."""
+    print(f"\nGenerating regional analysis visualization...")
+    
+    fig, axes = plt.subplots(2, 2, figsize=(18, 14))
+    
+    # Risk colors mapping
+    risk_colors = {
+        'Very High': 'darkred',
+        'High': 'red',
+        'Moderate': 'orange',
+        'Low': 'yellow',
+        'Very Low': 'lightgreen'
+    }
+    
+    # 1. Regional Risk Score Map
+    ax1 = axes[0, 0]
+    
+    if regional_analysis['regional_stats'] is not None:
+        regional_stats = regional_analysis['regional_stats']
+        scatter1 = ax1.scatter(
+            regional_stats['longitude'],
+            regional_stats['latitude'],
+            c=regional_stats['risk_score'],
+            s=200,
+            cmap='YlOrRd',
+            alpha=0.8,
+            edgecolors='black',
+            linewidth=1
+        )
+        
+        # Add region labels
+        for idx, row in regional_stats.iterrows():
+            ax1.annotate(
+                row['region_name'][:8],  # Abbreviated name
+                (row['longitude'], row['latitude']),
+                xytext=(5, 5),
+                textcoords='offset points',
+                fontsize=8,
+                alpha=0.7
+            )
+    
+    ax1.set_xlabel('Longitude')
+    ax1.set_ylabel('Latitude')
+    ax1.set_title('Regional Risk Scores - Pulau Jawa\n(Size & Color = Risk Level)', fontsize=12, fontweight='bold')
+    ax1.grid(True, alpha=0.3)
+    cbar1 = plt.colorbar(scatter1, ax=ax1)
+    cbar1.set_label('Regional Risk Score', rotation=270, labelpad=20)
+    
+    # 2. Provincial Risk Comparison
+    ax2 = axes[0, 1]
+    
+    if regional_analysis['provincial_stats'] is not None:
+        provincial_stats = regional_analysis['provincial_stats']
+        
+        # Sort by risk score for better visualization
+        provincial_stats_sorted = provincial_stats.sort_values('avg_risk_score', ascending=True)
+        
+        bars = ax2.barh(
+            provincial_stats_sorted['province'],
+            provincial_stats_sorted['avg_risk_score'],
+            color=[risk_colors.get(RiskCalculator.get_risk_level(score), 'gray') 
+                   for score in provincial_stats_sorted['avg_risk_score']],
+            edgecolor='black',
+            linewidth=1
+        )
+        
+        # Add value labels
+        for i, bar in enumerate(bars):
+            width = bar.get_width()
+            ax2.text(width + 0.5, bar.get_y() + bar.get_height()/2,
+                    f'{width:.1f}', ha='left', va='center', fontweight='bold')
+    
+    ax2.set_xlabel('Average Risk Score')
+    ax2.set_title('Provincial Risk Comparison', fontsize=12, fontweight='bold')
+    ax2.grid(True, axis='x', alpha=0.3)
+    
+    # 3. Risk Level Distribution by Province
+    ax3 = axes[1, 0]
+    
+    if regional_analysis['risk_by_province'] is not None:
+        risk_by_province = regional_analysis['risk_by_province']
+        
+        # Remove the 'All' row and column for better visualization
+        if 'All' in risk_by_province.index:
+            risk_by_province = risk_by_province.drop('All', axis=0)
+        if 'All' in risk_by_province.columns:
+            risk_by_province = risk_by_province.drop('All', axis=1)
+        
+        # Create stacked bar chart
+        risk_by_province.plot(kind='bar', stacked=True, ax=ax3, 
+                             color=[risk_colors.get(col, 'gray') for col in risk_by_province.columns],
+                             edgecolor='black', linewidth=0.5)
+    
+    ax3.set_xlabel('Province')
+    ax3.set_ylabel('Number of Regions')
+    ax3.set_title('Risk Level Distribution by Province', fontsize=12, fontweight='bold')
+    ax3.legend(title='Risk Level', bbox_to_anchor=(1.05, 1), loc='upper left')
+    ax3.tick_params(axis='x', rotation=45)
+    ax3.grid(True, axis='y', alpha=0.3)
+    
+    # 4. Top Risk Regions
+    ax4 = axes[1, 1]
+    
+    if regional_analysis['high_risk_regions'] is not None:
+        top_regions = regional_analysis['high_risk_regions'].head(10)
+        
+        bars = ax4.barh(
+            range(len(top_regions)),
+            top_regions['risk_score'],
+            color=[risk_colors.get(RiskCalculator.get_risk_level(score), 'gray') 
+                   for score in top_regions['risk_score']],
+            edgecolor='black',
+            linewidth=1
+        )
+        
+        # Set y-tick labels with region names and provinces
+        labels = [f"{row['region_name'][:12]} ({row['province'][:8]})" 
+                 for _, row in top_regions.iterrows()]
+        ax4.set_yticks(range(len(top_regions)))
+        ax4.set_yticklabels(labels, fontsize=9)
+        
+        # Add value labels
+        for i, bar in enumerate(bars):
+            width = bar.get_width()
+            ax4.text(width + 0.5, bar.get_y() + bar.get_height()/2,
+                    f'{width:.1f}', ha='left', va='center', fontweight='bold')
+    
+    ax4.set_xlabel('Risk Score')
+    ax4.set_title('Top 10 Highest Risk Regions', fontsize=12, fontweight='bold')
+    ax4.grid(True, axis='x', alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(output_file, dpi=150, bbox_inches='tight')
+    print(f"Regional analysis visualization saved to {output_file}")
+    
+    return fig
+
+
 def main():
     """Main execution function."""
     print("="*60)
     print("EARTHQUAKE RISK ZONING - QUADTREE IMPLEMENTATION")
     print("Using Divide & Conquer Algorithm")
+    print("Enhanced with Geological Data Integration")
     print("="*60)
     
-    # Load data
+    # Load earthquake data
     df = load_earthquake_data('data/earthquake_data.csv')
     
-    # Calculate risk scores
-    df = calculate_risk_scores(df)
+    # Load geological data (faults and volcanoes)
+    faults_data, volcanoes_data = load_geological_data(
+        'data/faults_data.csv', 
+        'data/volcanoes_data.csv'
+    )
+    
+    # Calculate enhanced risk scores with geological data
+    df = calculate_risk_scores(df, faults_data, volcanoes_data)
     
     # Build QuadTree
     qt = build_quadtree(df)
@@ -379,21 +582,104 @@ def main():
     # Compare performance
     performance_results = compare_performance(df, qt, num_queries=100)
     
+
+
     # Visualize
-    visualize_risk_map(df, qt, 'risk_map.png')
-    visualize_quadtree_structure(qt, df, 'quadtree_structure.png')
+    visualize_risk_map(df, qt, 'output/visualizations/risk_map.png')
+    visualize_quadtree_structure(qt, df, 'output/visualizations/quadtree_structure.png')
     
-    # Summary statistics
+    # Enhanced summary statistics
     print("\n" + "="*60)
-    print("SUMMARY")
+    print("ENHANCED SUMMARY WITH GEOLOGICAL DATA")
     print("="*60)
     print(f"\nRisk Level Distribution:")
     print(df['risk_level'].value_counts().sort_index())
     
+
     print(f"\nTop 5 Highest Risk Locations:")
     top_risk = df.nlargest(5, 'risk_score')[['latitude', 'longitude', 'magnitude', 
-                                               'depth', 'risk_score', 'risk_level']]
+                                               'depth', 'risk_score', 'risk_level',
+                                               'fault_distance_km', 'volcano_distance_km', 'region_name']]
     print(top_risk.to_string(index=False))
+    
+
+    # Load Jawa regions data
+    print(f"\n" + "="*60)
+    print("REGIONAL ANALYSIS FOR PULAU JAWA")
+    print("="*60)
+    
+    regions_df = RiskCalculator.load_jawa_regions_data('data/jawa_regions.csv')
+    
+    if regions_df is not None:
+        # Comprehensive regional analysis
+        regional_analysis = RiskCalculator.get_regional_comparison(df, regions_df)
+        
+        # Display regional summary
+        print("\n" + RiskCalculator.generate_regional_summary(regional_analysis))
+        
+        # Export regional data
+        if regional_analysis['regional_stats'] is not None:
+            regional_stats = regional_analysis['regional_stats']
+
+
+
+            print(f"\nExporting regional statistics to 'output/data/regional_risk_analysis.csv'...")
+            regional_stats.to_csv('output/data/regional_risk_analysis.csv', index=False)
+            print(f"Regional statistics saved successfully!")
+        
+        if regional_analysis['provincial_stats'] is not None:
+            provincial_stats = regional_analysis['provincial_stats']
+
+
+
+            print(f"\nExporting provincial statistics to 'output/data/provincial_risk_analysis.csv'...")
+            provincial_stats.to_csv('output/data/provincial_risk_analysis.csv', index=False)
+            print(f"Provincial statistics saved successfully!")
+        
+
+
+        # Enhanced regional visualization
+        print(f"\nGenerating regional risk visualization...")
+        visualize_regional_analysis(df, regions_df, regional_analysis, 'output/visualizations/regional_analysis.png')
+        
+        # Detailed regional breakdown
+        print(f"\nDetailed Regional Analysis:")
+        print(f"Total regions analyzed: {len(regional_analysis['regional_stats']) if regional_analysis['regional_stats'] is not None else 0}")
+        print(f"Total provinces: {len(regional_analysis['provincial_stats']) if regional_analysis['provincial_stats'] is not None else 0}")
+        
+        if regional_analysis['regional_stats'] is not None:
+            print(f"\nTop 5 Highest Risk Regions:")
+            top_regions = regional_analysis['regional_stats'].nlargest(5, 'risk_score')
+            for idx, row in top_regions.iterrows():
+                print(f"  {row['region_name']} ({row['province']}): Risk Score {row['risk_score']:.2f}")
+        
+        if regional_analysis['provincial_stats'] is not None:
+            print(f"\nProvincial Risk Summary:")
+            for idx, row in regional_analysis['provincial_stats'].iterrows():
+                print(f"  {row['province']}: Avg Risk {row['avg_risk_score']:.2f}, {row['regions_affected']} regions")
+    else:
+        # Fallback to basic regional analysis if regions data not available
+        print(f"\nBasic Regional Risk Analysis:")
+        region_stats = df.groupby('region_name').agg({
+            'risk_score': ['mean', 'count'],
+            'magnitude': 'mean',
+            'latitude': 'mean',
+            'longitude': 'mean'
+        }).round(2)
+        
+        region_stats.columns = ['Avg_Risk_Score', 'Earthquake_Count', 'Avg_Magnitude', 'Avg_Lat', 'Avg_Lon']
+        region_stats = region_stats.sort_values('Avg_Risk_Score', ascending=False)
+        print(region_stats.to_string())
+    
+    # Geological analysis
+    print(f"\nGeological Analysis:")
+    print(f"Closest to fault line: {df.loc[df['fault_distance_km'].idxmin(), 'fault_distance_km']:.2f} km")
+    print(f"Closest to volcano: {df.loc[df['volcano_distance_km'].idxmin(), 'volcano_distance_km']:.2f} km")
+    
+    # Risk level by region
+    print(f"\nRisk Level Distribution by Region:")
+    risk_by_region = pd.crosstab(df['region_name'], df['risk_level'])
+    print(risk_by_region.to_string())
     
     print(f"\n{'='*60}")
     print("Analysis complete! Check generated visualizations:")

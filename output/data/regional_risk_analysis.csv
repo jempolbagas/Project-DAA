@@ -1,0 +1,101 @@
+region_name,risk_score,magnitude,depth,latitude,longitude,plate_zone,province,type,risk_level
+Bandung,59.73867539674316,5.85,19.0,-6.95875,107.55955,1.5,Jawa Barat,Kota,Moderate
+Bandung Barat,63.392010580758985,6.2,15.0,-6.8167,107.2833,2.0,Jawa Barat,Kabupaten,High
+Bangkalan,49.067312794302524,5.0,40.0,-7.0333,112.7833,1.0,Jawa Timur,Kabupaten,Moderate
+Banjar,45.966009746255146,5.0,45.0,-7.3667,108.5333,1.0,Jawa Barat,Kota,Moderate
+Banjarnegara,51.51994749658804,5.3,30.0,-7.4167,109.6333,1.0,Jawa Tengah,Kabupaten,Moderate
+Bantul,63.517911784458924,5.9,11.0,-7.8833,110.3333,2.0,DI Yogyakarta,Kabupaten,High
+Banyumas,58.86755819978846,6.1,20.0,-7.4667,109.2833,2.0,Jawa Tengah,Kabupaten,Moderate
+Banyuwangi,47.905386590884696,5.8,25.0,-8.2167,114.3667,1.0,Jawa Timur,Kabupaten,Moderate
+Batang,51.29705952978528,5.8,24.0,-6.8833,109.7333,1.0,Jawa Tengah,Kabupaten,Moderate
+Batu,49.703679358603196,5.0,35.0,-7.8722,112.5267,1.0,Jawa Timur,Kota,Moderate
+Bekasi,55.631494905915005,6.0,20.0,-6.29245,107.1506,2.0,Jawa Barat,Kota,Moderate
+Blitar,58.26303998673078,6.1,18.0,-8.075,112.1667,2.0,Jawa Timur,Kota,Moderate
+Blora,37.13561870165053,4.5,40.0,-6.9833,111.4,0.0,Jawa Tengah,Kabupaten,Low
+Bogor,63.631433675233794,6.3,15.0,-6.575,106.775,2.0,Jawa Barat,Kota,High
+Bojonegoro,36.03032160111412,4.0,50.0,-7.2167,111.8667,0.0,Jawa Timur,Kabupaten,Low
+Bondowoso,50.894171517381196,5.5,28.0,-7.9167,113.8167,1.0,Jawa Timur,Kabupaten,Moderate
+Boyolali,56.21772895709456,5.9,22.0,-7.5167,110.5833,1.0,Jawa Tengah,Kabupaten,Moderate
+Brebes,50.01550027580915,5.5,28.0,-7.0667,108.8667,1.0,Jawa Tengah,Kabupaten,Moderate
+Ciamis,50.47976649916423,5.4,30.0,-7.3333,108.35,1.0,Jawa Barat,Kabupaten,Moderate
+Cianjur,65.66212445835966,6.9,9.0,-6.8177,107.1394,2.0,Jawa Barat,Kabupaten,High
+Cilacap,56.075577340152996,6.2,22.0,-7.6667,109.0,2.0,Jawa Tengah,Kabupaten,Moderate
+Cilegon,62.03215630687867,7.2,8.0,-5.9833,106.0,2.0,Banten,Kota,High
+Cimahi,56.25313278639863,5.5,25.0,-6.8833,107.55,1.0,Jawa Barat,Kota,Moderate
+Cirebon,52.586684877814044,5.0,40.0,-6.808350000000001,108.525,1.0,Jawa Barat,Kota,Moderate
+Demak,52.88282179419402,5.5,35.0,-6.9,110.5,1.0,Jawa Tengah,Kabupaten,Moderate
+Depok,52.97313081993772,5.6,35.0,-6.4,106.8333,1.0,Jawa Barat,Kota,Moderate
+Garut,54.49003662272289,5.7,28.0,-7.2167,107.5167,1.0,Jawa Barat,Kabupaten,Moderate
+Gresik,52.51175108628391,5.5,30.0,-7.1667,112.5667,1.0,Jawa Timur,Kabupaten,Moderate
+Grobogan,47.815464034033525,5.7,25.0,-7.1667,111.1333,1.0,Jawa Tengah,Kabupaten,Moderate
+Gunung Kidul,52.77260533589213,5.6,26.0,-8.0667,110.6167,1.0,DI Yogyakarta,Kabupaten,Moderate
+Indramayu,56.88451076130055,6.4,16.0,-6.3167,105.8833,2.0,Jawa Barat,Kabupaten,Moderate
+Jakarta Barat,61.012205711176904,6.3,12.0,-6.1744,106.7692,2.0,DKI Jakarta,Kota,High
+Jakarta Pusat,60.719037911139814,6.5,10.0,-6.1744,106.8227,2.0,DKI Jakarta,Kota,High
+Jakarta Selatan,59.242066041106426,6.1,15.0,-6.2838,106.8172,2.0,DKI Jakarta,Kota,Moderate
+Jakarta Timur,56.96348561516816,5.9,20.0,-6.2259,106.9007,2.0,DKI Jakarta,Kota,Moderate
+Jakarta Utara,57.74377130207705,5.8,18.0,-6.1295,106.7213,2.0,DKI Jakarta,Kota,Moderate
+Jember,56.14770421093874,6.0,20.0,-8.1667,113.6667,2.0,Jawa Timur,Kabupaten,Moderate
+Jepara,39.576351679133595,4.3,50.0,-6.6,110.6667,0.0,Jawa Tengah,Kabupaten,Low
+Jombang,59.71904302710356,6.3,16.0,-7.5333,112.2333,2.0,Jawa Timur,Kabupaten,Moderate
+Karanganyar,54.71670340288755,5.8,24.0,-7.6167,110.95,1.0,Jawa Tengah,Kabupaten,Moderate
+Karawang,56.75213286617118,6.3,16.0,-6.2833,107.3333,2.0,Jawa Barat,Kabupaten,Moderate
+Kebumen,60.07888380506907,6.5,10.0,-7.6667,109.65,2.0,Jawa Tengah,Kabupaten,High
+Kediri,58.432395897495454,6.2,18.0,-7.80835,112.03335,2.0,Jawa Timur,Kota,Moderate
+Kendal,53.64282209744612,5.7,25.0,-7.0,110.15,1.0,Jawa Tengah,Kabupaten,Moderate
+Kep. Seribu,39.71450383959105,4.2,45.0,-5.75,106.8333,1.0,DKI Jakarta,Kabupaten,Low
+Klaten,54.86688497871468,5.3,28.0,-7.7167,110.6,1.0,Jawa Tengah,Kabupaten,Moderate
+Kudus,56.90037218197111,6.0,19.0,-6.8333,110.8333,2.0,Jawa Tengah,Kabupaten,Moderate
+Kulon Progo,50.889957284380785,5.3,32.0,-7.8333,110.15,1.0,DI Yogyakarta,Kabupaten,Moderate
+Kuningan,57.24325366509287,5.8,24.0,-6.9667,108.4833,1.0,Jawa Barat,Kabupaten,Moderate
+Lamongan,40.83969003145007,4.5,45.0,-7.1667,112.3333,0.0,Jawa Timur,Kabupaten,Moderate
+Lebak,62.96249595575855,7.0,11.0,-6.5667,106.2167,2.0,Banten,Kabupaten,High
+Lumajang,62.54142660327086,6.5,10.0,-8.1333,113.2333,2.0,Jawa Timur,Kabupaten,High
+Madiun,52.85237866677319,5.75,24.5,-7.60835,111.525,1.0,Jawa Timur,Kota,Moderate
+Magelang,57.57769184513266,6.0,21.0,-7.5083,110.2167,1.5,Jawa Tengah,Kota,Moderate
+Magetan,53.49559873383981,5.6,26.0,-7.65,111.3333,1.0,Jawa Timur,Kabupaten,Moderate
+Majalengka,54.30536593148302,5.6,35.0,-6.8333,108.2333,1.0,Jawa Barat,Kabupaten,Moderate
+Malang,64.38273468325126,7.1,8.0,-7.98335,112.60835,2.0,Jawa Timur,Kota,High
+Mojokerto,57.8422085051731,6.050000000000001,20.0,-7.50835,112.4333,1.5,Jawa Timur,Kota,Moderate
+Nganjuk,58.44344417651299,6.0,19.0,-7.6,111.9,2.0,Jawa Timur,Kabupaten,Moderate
+Ngawi,52.81326279129965,5.9,22.0,-7.45,111.4667,1.0,Jawa Timur,Kabupaten,Moderate
+Pacitan,57.53831272192276,6.0,20.0,-8.2167,111.0833,2.0,Jawa Timur,Kabupaten,Moderate
+Pamekasan,52.03848136820537,5.4,30.0,-7.1667,113.2333,1.0,Jawa Timur,Kabupaten,Moderate
+Pandeglang,63.84094714937474,7.3,7.0,-6.3,106.1,2.0,Banten,Kabupaten,High
+Pangandaran,40.41196909851361,4.8,48.0,-7.6667,108.5,0.0,Jawa Barat,Kabupaten,Moderate
+Pasuruan,56.60642334157292,5.949999999999999,22.0,-7.675000000000001,112.725,1.5,Jawa Timur,Kota,Moderate
+Pati,40.20574107136362,4.6,45.0,-6.75,111.0333,0.0,Jawa Tengah,Kabupaten,Moderate
+Pekalongan,53.18311209430024,5.949999999999999,22.0,-6.89165,109.63335000000001,1.5,Jawa Tengah,Kota,Moderate
+Pemalang,51.86048961354992,5.9,22.0,-6.9833,109.3667,1.0,Jawa Tengah,Kabupaten,Moderate
+Ponorogo,60.45308480372207,6.0,19.0,-7.8667,111.4333,2.0,Jawa Timur,Kabupaten,High
+Probolinggo,48.63261735545919,5.0,40.0,-7.775,113.15,1.0,Jawa Timur,Kota,Moderate
+Purbalingga,52.020519392522104,5.5,28.0,-7.3833,109.3333,1.0,Jawa Tengah,Kabupaten,Moderate
+Purwakarta,53.17688806032249,5.7,26.0,-6.5167,107.4333,1.0,Jawa Barat,Kabupaten,Moderate
+Purworejo,48.44170177435022,5.2,32.0,-7.8333,110.0,1.0,Jawa Tengah,Kabupaten,Moderate
+Rembang,33.76926454420834,4.0,50.0,-6.7,111.35,0.0,Jawa Tengah,Kabupaten,Low
+Salatiga,55.02087479662552,5.5,28.0,-7.3167,110.5,1.0,Jawa Tengah,Kota,Moderate
+Sampang,50.13320986491219,5.2,35.0,-7.0667,113.3167,1.0,Jawa Timur,Kabupaten,Moderate
+Semarang,55.925436231486685,5.6,26.0,-7.0691500000000005,110.40985,1.0,Jawa Tengah,Kota,Moderate
+Serang,59.893229470349496,6.8,12.0,-6.10835,106.15835000000001,2.0,Banten,Kota,Moderate
+Sidoarjo,61.49993207180565,6.4,15.0,-7.25,112.7167,2.0,Jawa Timur,Kabupaten,High
+Situbondo,41.2536807058211,4.7,48.0,-7.7,114.05,0.0,Jawa Timur,Kabupaten,Moderate
+Sleman,62.86353072625499,6.2,12.0,-7.7167,110.3333,2.0,DI Yogyakarta,Kabupaten,High
+Sragen,50.158927614930384,5.4,30.0,-7.4167,111.1333,1.0,Jawa Tengah,Kabupaten,Moderate
+Subang,59.10198332716189,6.0,19.0,-6.5167,107.75,2.0,Jawa Barat,Kabupaten,Moderate
+Sukabumi,54.69063030926683,5.5,25.0,-6.96045,106.86155,1.0,Jawa Barat,Kota,Moderate
+Sukoharjo,54.172359196719256,5.6,26.0,-7.75,110.8167,1.0,Jawa Tengah,Kabupaten,Moderate
+Sumedang,56.85572115636752,5.9,22.0,-6.85,107.9167,1.0,Jawa Barat,Kabupaten,Moderate
+Sumenep,44.43806829106037,5.2,32.0,-7.0167,113.8667,1.0,Jawa Timur,Kabupaten,Moderate
+Surabaya,53.97610566842654,5.5,30.0,-7.25,112.75,1.0,Jawa Timur,Kota,Moderate
+Surakarta,52.603543302175794,5.5,28.0,-7.5667,110.8333,1.0,Jawa Tengah,Kota,Moderate
+Tangerang,64.06705888072703,6.75,12.5,-6.29335,106.64,2.0,Banten,Kota,High
+Tangerang Selatan,63.35470265299858,6.6,14.0,-6.3167,106.7167,2.0,Banten,Kota,High
+Tasikmalaya,50.634013056128225,5.2,32.0,-7.36375,108.1604,1.0,Jawa Barat,Kota,Moderate
+Tegal,48.22287467899817,5.7,27.0,-6.93335,109.11664999999999,1.0,Jawa Tengah,Kota,Moderate
+Temanggung,54.52893200297741,5.6,26.0,-7.3167,110.1667,1.0,Jawa Tengah,Kabupaten,Moderate
+Trenggalek,49.872382736348456,5.7,25.0,-8.05,111.7333,1.0,Jawa Timur,Kabupaten,Moderate
+Tuban,32.79428666657801,4.0,50.0,-6.8833,112.0667,0.0,Jawa Timur,Kabupaten,Low
+Tulungagung,51.19106898855924,5.9,22.0,-8.0667,111.9,1.0,Jawa Timur,Kabupaten,Moderate
+Wonogiri,52.131265484266024,5.1,35.0,-7.8167,111.1,1.0,Jawa Tengah,Kabupaten,Moderate
+Wonosobo,52.58382836119504,5.4,30.0,-7.3333,109.95,1.0,Jawa Tengah,Kabupaten,Moderate
+Yogyakarta,61.42017433547116,6.0,15.0,-7.7956,110.3686,2.0,DI Yogyakarta,Kota,High

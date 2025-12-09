@@ -1,3 +1,4 @@
+
 """
 Risk calculation module for earthquake risk assessment.
 Calculates risk scores based on 7 parameters:
@@ -11,20 +12,24 @@ Calculates risk scores based on 7 parameters:
 """
 
 import math
+import pandas as pd
 
 
 class RiskCalculator:
     """Calculate earthquake risk scores based on multiple parameters."""
     
+
+
     # Risk weights for each parameter (total = 1.0)
     WEIGHTS = {
-        'magnitude': 0.25,      # Earthquake magnitude (Richter scale)
+        'magnitude': 0.20,      # Earthquake magnitude (Richter scale)
         'depth': 0.10,          # Depth of earthquake (km)
-        'intensity': 0.20,      # Intensity (MMI scale)
-        'frequency': 0.15,      # Historical frequency in area
-        'fault_distance': 0.15, # Distance to nearest fault line (km)
+        'intensity': 0.15,      # Intensity (MMI scale)
+        'frequency': 0.13,      # Historical frequency in area
+        'fault_distance': 0.14, # Distance to nearest fault line (km)
         'volcano_distance': 0.10, # Distance to nearest volcano (km)
-        'plate_zone': 0.05      # Proximity to plate boundaries
+        'plate_zone': 0.08,     # Proximity to plate boundaries
+        'population_density': 0.10  # Population density (people per km²)
     }
     
     @staticmethod
@@ -94,6 +99,7 @@ class RiskCalculator:
         normalized = max(0, 1.0 - (distance / 150.0))
         return normalized
     
+
     @staticmethod
     def normalize_plate_zone(zone_type):
         """
@@ -107,9 +113,21 @@ class RiskCalculator:
         }
         return zone_risks.get(zone_type, 0.5)
     
+    @staticmethod
+    def normalize_population_density(density):
+        """
+        Normalize population density to 0-1 scale.
+        Higher density = higher risk (more people at stake).
+        """
+        # Higher density = higher risk
+        # Assume max density of 100,000 people/km² for normalization
+        return min(density / 100000.0, 1.0)
+    
+
     @classmethod
     def calculate_risk_score(cls, magnitude, depth, intensity, frequency,
-                            fault_distance, volcano_distance, plate_zone):
+                            fault_distance, volcano_distance, plate_zone, 
+                            population_density=None):
         """
         Calculate comprehensive risk score (0-100).
         
@@ -121,6 +139,7 @@ class RiskCalculator:
             fault_distance: Distance to nearest fault (km)
             volcano_distance: Distance to nearest volcano (km)
             plate_zone: Zone type (0=stable, 1=boundary, 2=subduction)
+            population_density: Population density (people per km²)
             
         Returns:
             Risk score (0-100)
@@ -134,6 +153,12 @@ class RiskCalculator:
         norm_volcano = cls.normalize_volcano_distance(volcano_distance)
         norm_plate = cls.normalize_plate_zone(plate_zone)
         
+        # Normalize population density if provided
+        if population_density is not None:
+            norm_population = cls.normalize_population_density(population_density)
+        else:
+            norm_population = 0.0  # Default to no population risk if not provided
+        
         # Calculate weighted score
         risk_score = (
             cls.WEIGHTS['magnitude'] * norm_magnitude +
@@ -142,11 +167,284 @@ class RiskCalculator:
             cls.WEIGHTS['frequency'] * norm_frequency +
             cls.WEIGHTS['fault_distance'] * norm_fault +
             cls.WEIGHTS['volcano_distance'] * norm_volcano +
-            cls.WEIGHTS['plate_zone'] * norm_plate
+            cls.WEIGHTS['plate_zone'] * norm_plate +
+            cls.WEIGHTS['population_density'] * norm_population
         )
         
         # Scale to 0-100
         return risk_score * 100
+    
+
+    @staticmethod
+    def load_jawa_regions_data(filepath):
+        """
+        Load Jawa regions data from CSV file.
+        
+        Args:
+            filepath: Path to jawa_regions.csv file
+            
+        Returns:
+            DataFrame with regional data
+        """
+        try:
+            df = pd.read_csv(filepath)
+            print(f"Loaded {len(df)} regions from {filepath}")
+            return df
+        except Exception as e:
+            print(f"Error loading regions data: {e}")
+            return None
+    
+    @classmethod
+    def calculate_regional_risk_aggregation(cls, earthquake_df, regions_df, 
+                                           aggregation_type='mean'):
+        """
+        Calculate regional risk aggregation by region.
+        
+        Args:
+            earthquake_df: DataFrame with earthquake data
+            regions_df: DataFrame with regions data
+            aggregation_type: 'mean', 'max', 'min', 'count'
+            
+        Returns:
+            DataFrame with regional risk statistics
+        """
+        if regions_df is None:
+            return earthquake_df
+        
+        # Merge earthquake data with regions based on region_name
+        merged_df = earthquake_df.merge(
+            regions_df[['region_name', 'province', 'type']], 
+            on='region_name', 
+            how='left'
+        )
+        
+        # Calculate regional aggregation
+        if aggregation_type == 'mean':
+            regional_stats = merged_df.groupby('region_name').agg({
+                'risk_score': 'mean',
+                'magnitude': 'mean',
+                'depth': 'mean',
+                'latitude': 'mean',
+                'longitude': 'mean',
+                'plate_zone': 'mean',
+                'province': 'first',
+                'type': 'first'
+            }).reset_index()
+        elif aggregation_type == 'max':
+            regional_stats = merged_df.groupby('region_name').agg({
+                'risk_score': 'max',
+                'magnitude': 'max',
+                'depth': 'min',  # Shallowest depth = highest risk
+                'latitude': 'mean',
+                'longitude': 'mean',
+                'plate_zone': 'max',
+                'province': 'first',
+                'type': 'first'
+            }).reset_index()
+        elif aggregation_type == 'count':
+            regional_stats = merged_df.groupby('region_name').agg({
+                'risk_score': 'count',
+                'province': 'first',
+                'type': 'first'
+            }).reset_index()
+            regional_stats.rename(columns={'risk_score': 'earthquake_count'}, inplace=True)
+        
+        # Add risk level
+        regional_stats['risk_level'] = regional_stats['risk_score'].apply(cls.get_risk_level)
+        
+        return regional_stats
+    
+    @classmethod
+    def calculate_provincial_risk_analysis(cls, earthquake_df, regions_df):
+        """
+        Calculate provincial-level risk analysis for Jawa regions.
+        
+        Args:
+            earthquake_df: DataFrame with earthquake data
+            regions_df: DataFrame with regions data
+            
+        Returns:
+            DataFrame with provincial statistics
+        """
+        if regions_df is None:
+            return None
+        
+        # Merge data
+        merged_df = earthquake_df.merge(
+            regions_df[['region_name', 'province', 'type', 'population_2020']], 
+            on='region_name', 
+            how='left'
+        )
+        
+        # Calculate provincial statistics
+        provincial_stats = merged_df.groupby('province').agg({
+            'risk_score': ['mean', 'max', 'min', 'std'],
+            'magnitude': ['mean', 'max'],
+            'depth': ['mean', 'min'],
+            'frequency': 'mean',
+            'population_2020': 'sum',
+            'region_name': 'count'  # Number of regions with earthquakes
+        }).reset_index()
+        
+        # Flatten column names
+        provincial_stats.columns = [
+            'province', 'avg_risk_score', 'max_risk_score', 'min_risk_score', 'risk_std',
+            'avg_magnitude', 'max_magnitude', 'avg_depth', 'min_depth',
+            'avg_frequency', 'total_population', 'regions_affected'
+        ]
+        
+        # Add risk level classification
+        provincial_stats['risk_level'] = provincial_stats['avg_risk_score'].apply(cls.get_risk_level)
+        
+        # Calculate risk per capita (normalize by population)
+        provincial_stats['risk_per_100k'] = (
+            provincial_stats['avg_risk_score'] * provincial_stats['regions_affected'] / 
+            provincial_stats['total_population'] * 100000
+        )
+        
+        return provincial_stats
+    
+    @classmethod
+    def get_high_risk_regions(cls, regional_stats, top_n=10):
+        """
+        Get top N highest risk regions.
+        
+        Args:
+            regional_stats: DataFrame with regional statistics
+            top_n: Number of top regions to return
+            
+        Returns:
+            DataFrame with top risk regions
+        """
+        if regional_stats is None:
+            return None
+        
+        # Sort by risk score and return top N
+        top_regions = regional_stats.nlargest(top_n, 'risk_score')
+        
+        return top_regions
+    
+    @classmethod
+    def get_regional_comparison(cls, earthquake_df, regions_df):
+        """
+        Create comprehensive regional comparison analysis.
+        
+        Args:
+            earthquake_df: DataFrame with earthquake data
+            regions_df: DataFrame with regions data
+            
+        Returns:
+            Dictionary with various regional comparisons
+        """
+        if regions_df is None:
+            return None
+        
+        # Regional statistics
+        regional_stats = cls.calculate_regional_risk_aggregation(earthquake_df, regions_df)
+        
+        # Provincial statistics
+        provincial_stats = cls.calculate_provincial_risk_analysis(earthquake_df, regions_df)
+        
+        # High risk regions
+        high_risk_regions = cls.get_high_risk_regions(regional_stats, top_n=10)
+        
+        # Province ranking
+        if provincial_stats is not None:
+            province_ranking = provincial_stats.sort_values('avg_risk_score', ascending=False)
+        else:
+            province_ranking = None
+        
+        # Risk level distribution by province
+        risk_by_province = cls.get_risk_distribution_by_province(earthquake_df, regions_df)
+        
+        return {
+            'regional_stats': regional_stats,
+            'provincial_stats': provincial_stats,
+            'high_risk_regions': high_risk_regions,
+            'province_ranking': province_ranking,
+            'risk_by_province': risk_by_province
+        }
+    
+    @classmethod
+    def get_risk_distribution_by_province(cls, earthquake_df, regions_df):
+        """
+        Get risk level distribution by province.
+        
+        Args:
+            earthquake_df: DataFrame with earthquake data
+            regions_df: DataFrame with regions data
+            
+        Returns:
+            DataFrame with risk distribution by province
+        """
+        if regions_df is None:
+            return None
+        
+        # Merge data
+        merged_df = earthquake_df.merge(
+            regions_df[['region_name', 'province', 'type']], 
+            on='region_name', 
+            how='left'
+        )
+        
+        # Create crosstab
+        risk_distribution = pd.crosstab(
+            merged_df['province'], 
+            merged_df['risk_level'], 
+            margins=True
+        )
+        
+        return risk_distribution
+    
+    @classmethod
+    def generate_regional_summary(cls, regional_analysis):
+        """
+        Generate comprehensive regional summary report.
+        
+        Args:
+            regional_analysis: Dictionary from get_regional_comparison
+            
+        Returns:
+            Formatted string summary
+        """
+        if not regional_analysis:
+            return "No regional analysis available."
+        
+        summary = []
+        summary.append("="*60)
+        summary.append("REGIONAL RISK ANALYSIS SUMMARY")
+        summary.append("="*60)
+        
+        # High risk regions
+        if regional_analysis['high_risk_regions'] is not None:
+            summary.append("\nTOP 10 HIGHEST RISK REGIONS:")
+            summary.append("-" * 40)
+            top_regions = regional_analysis['high_risk_regions']
+            for idx, row in top_regions.iterrows():
+                summary.append(
+                    f"{row['region_name']} ({row['province']}): "
+                    f"Risk Score {row['risk_score']:.2f} ({row['risk_level']})"
+                )
+        
+        # Provincial ranking
+        if regional_analysis['province_ranking'] is not None:
+            summary.append("\nPROVINCIAL RISK RANKING:")
+            summary.append("-" * 30)
+            provinces = regional_analysis['province_ranking']
+            for idx, row in provinces.iterrows():
+                summary.append(
+                    f"{idx+1}. {row['province']}: "
+                    f"Avg Risk {row['avg_risk_score']:.2f} ({row['risk_level']}), "
+                    f"{row['regions_affected']} regions affected"
+                )
+        
+        # Risk distribution
+        if regional_analysis['risk_by_province'] is not None:
+            summary.append("\nRISK DISTRIBUTION BY PROVINCE:")
+            summary.append("-" * 35)
+            summary.append(str(regional_analysis['risk_by_province']))
+        
+        return "\n".join(summary)
     
     @staticmethod
     def get_risk_level(score):
@@ -170,7 +468,126 @@ class RiskCalculator:
         else:
             return "Very Low"
     
+
+    @staticmethod
+    def haversine_distance(lat1, lon1, lat2, lon2):
+        """
+        Calculate the great circle distance between two points 
+        on the earth (specified in decimal degrees) using Haversine formula.
+        Returns distance in kilometers.
+        """
+        # Convert decimal degrees to radians
+        lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+        
+        # Haversine formula
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+        a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+        c = 2 * math.asin(math.sqrt(a))
+        
+        # Radius of earth in kilometers
+        r = 6371
+        return c * r
+    
     @staticmethod
     def calculate_distance(x1, y1, x2, y2):
         """Calculate Euclidean distance between two points."""
         return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    
+    @classmethod
+    def find_nearest_fault_distance(cls, lat, lon, faults_data):
+        """
+        Find distance to nearest fault line from given coordinates.
+        
+        Args:
+            lat: Latitude
+            lon: Longitude  
+            faults_data: DataFrame with fault coordinates
+            
+        Returns:
+            Distance in kilometers to nearest fault
+        """
+        if faults_data is None or len(faults_data) == 0:
+            return 200.0  # Default distance if no fault data
+        
+        min_distance = float('inf')
+        
+        for _, fault in faults_data.iterrows():
+            distance = cls.haversine_distance(lat, lon, fault['latitude'], fault['longitude'])
+            min_distance = min(min_distance, distance)
+        
+        return min_distance if min_distance != float('inf') else 200.0
+    
+    @classmethod
+    def find_nearest_volcano_distance(cls, lat, lon, volcanoes_data):
+        """
+        Find distance to nearest volcano from given coordinates.
+        
+        Args:
+            lat: Latitude
+            lon: Longitude
+            volcanoes_data: DataFrame with volcano coordinates
+            
+        Returns:
+            Distance in kilometers to nearest volcano
+        """
+        if volcanoes_data is None or len(volcanoes_data) == 0:
+            return 150.0  # Default distance if no volcano data
+        
+        min_distance = float('inf')
+        
+        for _, volcano in volcanoes_data.iterrows():
+            distance = cls.haversine_distance(lat, lon, volcano['latitude'], volcano['longitude'])
+            min_distance = min(min_distance, distance)
+        
+        return min_distance if min_distance != float('inf') else 150.0
+    
+    @classmethod
+    def calculate_enhanced_risk_score(cls, magnitude, depth, intensity, frequency,
+                                    lat, lon, faults_data=None, volcanoes_data=None, 
+                                    plate_zone=1):
+        """
+        Calculate comprehensive risk score (0-100) with geological data integration.
+        
+        This implements the blueprint specification with real geological features.
+        
+        Args:
+            magnitude: Earthquake magnitude (Richter scale)
+            depth: Depth in km
+            intensity: MMI intensity (1-12)
+            frequency: Events per year
+            lat: Latitude for distance calculations
+            lon: Longitude for distance calculations
+            faults_data: DataFrame with fault data
+            volcanoes_data: DataFrame with volcano data
+            plate_zone: Zone type (0=stable, 1=boundary, 2=subduction)
+            
+        Returns:
+            Risk score (0-100)
+        """
+        # Calculate actual distances using Haversine formula
+        fault_distance = cls.find_nearest_fault_distance(lat, lon, faults_data)
+        volcano_distance = cls.find_nearest_volcano_distance(lat, lon, volcanoes_data)
+        
+        # Normalize all parameters according to blueprint
+        norm_magnitude = cls.normalize_magnitude(magnitude)
+        norm_depth = cls.normalize_depth(depth)
+        norm_intensity = cls.normalize_intensity(intensity)
+        norm_frequency = cls.normalize_frequency(frequency)
+        norm_fault = cls.normalize_fault_distance(fault_distance)
+        norm_volcano = cls.normalize_volcano_distance(volcano_distance)
+        norm_plate = cls.normalize_plate_zone(plate_zone)
+        
+        # Calculate weighted score according to blueprint formula
+        risk_score = (
+            cls.WEIGHTS['magnitude'] * norm_magnitude +
+            cls.WEIGHTS['depth'] * norm_depth +
+            cls.WEIGHTS['intensity'] * norm_intensity +
+            cls.WEIGHTS['frequency'] * norm_frequency +
+            cls.WEIGHTS['fault_distance'] * norm_fault +
+            cls.WEIGHTS['volcano_distance'] * norm_volcano +
+            cls.WEIGHTS['plate_zone'] * norm_plate
+        )
+        
+        # Scale to 0-100
+        return risk_score * 100

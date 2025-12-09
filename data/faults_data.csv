@@ -1,0 +1,16 @@
+latitude,longitude,fault_name,fault_type,activity_level
+-6.85,107.65,Sesar Lembang,strike_slip,high 
+-7.20,110.50,Sesar Opak,strike_slip,high 
+-6.80,107.20,Sesar Baribis,thrust,high 
+-6.75,106.90,Sesar Cimandiri,strike_slip,high 
+-6.81,107.11,Sesar Cugenang,strike_slip,high 
+-7.50,112.50,Sesar Kendeng,thrust,high 
+-7.60,109.20,Sesar Ajibarang,strike_slip,medium 
+-7.70,110.70,Sesar Merapi-Merbabu,normal,medium 
+-6.70,108.50,Sesar Ciremai,strike_slip,medium 
+-6.50,111.00,Sesar Muria,normal,low 
+-7.50,113.40,Sesar RMKS,thrust,high 
+-8.30,113.00,Sesar Banda,Transform,medium
+-6.30,106.50,Sesar Bandung,normal,low
+-7.80,111.00,Sesar Opak Timur,normal,high
+-5.70,104.80,Sesar Sunda,Transform,medium

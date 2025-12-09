@@ -1,0 +1,24 @@
+latitude,longitude,volcano_name,volcano_type,elevation_m,activity_status
+-8.1,112.9,Semeru,stratovolcano,3676,active
+-7.8,110.4,Merapi,stratovolcano,2910,active
+-7.9,111.4,Lawu,stratovolcano,3265,dormant
+-7.2,109.8,Merbabu,stratovolcano,3115,active
+-6.8,107.6,Tangkuban Perahu,stratovolcano,2084,active
+-7.2,112.9,Bromo,stratovolcano,2329,active
+-8.1,114.2,Ijen,complex,2386,active
+-7.2,109.8,Slamet,stratovolcano,3428,active
+-8.1,112.3,Kelud,stratovolcano,1731,active
+-7.7,111.8,Arjuno-Welirang,stratovolcano,3339,active
+-6.8,106.8,Gede,stratovolcano,2958,dormant
+-6.9,108.4,Ciremai,stratovolcano,3078,dormant
+-7.3,107.7,Papandayan,stratovolcano,2665,active
+-7.2,107.4,Patuha,stratovolcano,2434,dormant
+-7.3,108.1,Galunggung,stratovolcano,2168,dormant
+-6.6,106.6,Salak,stratovolcano,2211,active
+-7.30,110.00,Sindoro,stratovolcano,3136,active
+-7.38,110.05,Sumbing,stratovolcano,3371,dormant
+-8.12,114.04,Raung,stratovolcano,3332,active
+-7.20,109.89,Dieng,complex,2565,active
+-7.00,108.05,Guntur,stratovolcano,2249,active
+-6.10,105.42,Krakatau,caldera,813,active
+-7.15,110.33,Ungaran,stratovolcano,2050,dormant

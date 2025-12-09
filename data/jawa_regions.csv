@@ -1,0 +1,120 @@
+region_name,province,type,latitude,longitude,area_km2,population_2020
+Jakarta Pusat,DKI Jakarta,Kota,-6.1744,106.8227,47.8,1061609
+Jakarta Utara,DKI Jakarta,Kota,-6.1295,106.7213,165.2,1706408
+Jakarta Selatan,DKI Jakarta,Kota,-6.2838,106.8172,141.3,2240623
+Jakarta Barat,DKI Jakarta,Kota,-6.1744,106.7692,129.4,2358304
+Jakarta Timur,DKI Jakarta,Kota,-6.2259,106.9007,184.1,3038401
+Kep. Seribu,DKI Jakarta,Kabupaten,-5.7500,106.8333,11.8,28715
+Bandung,Jawa Barat,Kota,-6.9175,107.6191,167.31,2555627
+Bandung,Jawa Barat,Kabupaten,-7.0000,107.5000,1767.96,3623778
+Bandung Barat,Jawa Barat,Kabupaten,-6.8167,107.2833,1305.77,1788336
+Bekasi,Jawa Barat,Kota,-6.2349,107.1512,210.49,2465792
+Bekasi,Jawa Barat,Kabupaten,-6.3500,107.1500,1224.88,3112526
+Bogor,Jawa Barat,Kota,-6.5833,106.7833,118.50,1043093
+Bogor,Jawa Barat,Kabupaten,-6.5667,106.7667,2986.2,5369599
+Ciamis,Jawa Barat,Kabupaten,-7.3333,108.3500,1414.71,1274994
+Cianjur,Jawa Barat,Kabupaten,-6.8177,107.1394,3840.4,2477389
+Cimahi,Jawa Barat,Kota,-6.8833,107.5500,40.37,568400
+Cirebon,Jawa Barat,Kota,-6.7167,108.5500,37.36,337377
+Cirebon,Jawa Barat,Kabupaten,-6.9000,108.5000,984.52,2270621
+Depok,Jawa Barat,Kota,-6.4000,106.8333,200.29,2056291
+Garut,Jawa Barat,Kabupaten,-7.2167,107.5167,3074.07,2585252
+Indramayu,Jawa Barat,Kabupaten,-6.3167,105.8833,2040.11,1835697
+Karawang,Jawa Barat,Kabupaten,-6.2833,107.3333,1652.2,2435579
+Kuningan,Jawa Barat,Kabupaten,-6.9667,108.4833,1194.5,1172827
+Majalengka,Jawa Barat,Kabupaten,-6.8333,108.2333,1201.78,1303120
+Pangandaran,Jawa Barat,Kabupaten,-7.6667,108.5000,1010.45,400407
+Purwakarta,Jawa Barat,Kabupaten,-6.5167,107.4333,825.74,924970
+Subang,Jawa Barat,Kabupaten,-6.5167,107.7500,2056.89,1545620
+Sukabumi,Jawa Barat,Kota,-6.9209,106.9231,48.25,346387
+Sukabumi,Jawa Barat,Kabupaten,-7.0000,106.8000,4135.71,2486133
+Sumedang,Jawa Barat,Kabupaten,-6.8500,107.9167,1558.7,1198547
+Tasikmalaya,Jawa Barat,Kota,-7.3275,108.2208,177.37,716155
+Tasikmalaya,Jawa Barat,Kabupaten,-7.4000,108.1000,2551.98,1873859
+Banjar,Jawa Barat,Kota,-7.3667,108.5333,131.47,201710
+Semarang,Jawa Tengah,Kota,-7.0050,110.4197,373.7,1653066
+Semarang,Jawa Tengah,Kabupaten,-7.1333,110.4000,950.2,1068832
+Surakarta,Jawa Tengah,Kota,-7.5667,110.8333,46.01,522364
+Magelang,Jawa Tengah,Kota,-7.4833,110.2167,18.12,121081
+Magelang,Jawa Tengah,Kabupaten,-7.5333,110.2167,1085.73,1299839
+Pekalongan,Jawa Tengah,Kota,-6.8833,109.6667,45.25,307150
+Pekalongan,Jawa Tengah,Kabupaten,-6.9000,109.6000,836.13,998595
+Tegal,Jawa Tengah,Kota,-6.8667,109.1333,39.68,276906
+Tegal,Jawa Tengah,Kabupaten,-7.0000,109.1000,876.10,1596996
+Kudus,Jawa Tengah,Kabupaten,-6.8333,110.8333,425.15,889980
+Pati,Jawa Tengah,Kabupaten,-6.7500,111.0333,1489.19,1324706
+Rembang,Jawa Tengah,Kabupaten,-6.7000,111.3500,1014.08,630138
+Blora,Jawa Tengah,Kabupaten,-6.9833,111.4000,1820.59,884333
+Grobogan,Jawa Tengah,Kabupaten,-7.1667,111.1333,2013.86,1453526
+Jepara,Jawa Tengah,Kabupaten,-6.6000,110.6667,1004.16,1188365
+Demak,Jawa Tengah,Kabupaten,-6.9000,110.5000,897.43,1133501
+Kendal,Jawa Tengah,Kabupaten,-7.0000,110.1500,1002.26,966275
+Temanggung,Jawa Tengah,Kabupaten,-7.3167,110.1667,870.65,790174
+Purbalingga,Jawa Tengah,Kabupaten,-7.3833,109.3333,777.63,948924
+Banjarnegara,Jawa Tengah,Kabupaten,-7.4167,109.6333,1069.73,1017767
+Wonosobo,Jawa Tengah,Kabupaten,-7.3333,109.9500,981.41,829676
+Kebumen,Jawa Tengah,Kabupaten,-7.6667,109.6500,1281.11,1358925
+Purworejo,Jawa Tengah,Kabupaten,-7.8333,110.0000,1034.92,753177
+Cilacap,Jawa Tengah,Kabupaten,-7.6667,109.0000,2124.47,1944857
+Banyumas,Jawa Tengah,Kabupaten,-7.4667,109.2833,1335.3,1817452
+Brebes,Jawa Tengah,Kabupaten,-7.0667,108.8667,1902.37,1980373
+Pemalang,Jawa Tengah,Kabupaten,-6.9833,109.3667,1115.3,1548651
+Batang,Jawa Tengah,Kabupaten,-6.8833,109.7333,788.66,800000
+Boyolali,Jawa Tengah,Kabupaten,-7.5167,110.5833,1015.1,967733
+Klaten,Jawa Tengah,Kabupaten,-7.7167,110.6000,655.56,1269222
+Sukoharjo,Jawa Tengah,Kabupaten,-7.7500,110.8167,466.72,903780
+Wonogiri,Jawa Tengah,Kabupaten,-7.8167,111.1000,1795.1,1047605
+Karanganyar,Jawa Tengah,Kabupaten,-7.6167,110.9500,775.31,936605
+Sragen,Jawa Tengah,Kabupaten,-7.4167,111.1333,948.97,993952
+Salatiga,Jawa Tengah,Kota,-7.3167,110.5000,56.77,192322
+Yogyakarta,DI Yogyakarta,Kota,-7.7956,110.3686,32.5,373589
+Sleman,DI Yogyakarta,Kabupaten,-7.7167,110.3333,574.82,1125805
+Bantul,DI Yogyakarta,Kabupaten,-7.8833,110.3333,506.86,985770
+Kulon Progo,DI Yogyakarta,Kabupaten,-7.8333,110.1500,586.28,434947
+Gunung Kidul,DI Yogyakarta,Kabupaten,-8.0667,110.6167,1485.36,747169
+Surabaya,Jawa Timur,Kota,-7.2500,112.7500,326.81,2765617
+Gresik,Jawa Timur,Kabupaten,-7.1667,112.5667,1190.5,1311736
+Sidoarjo,Jawa Timur,Kabupaten,-7.2500,112.7167,897.54,2275665
+Mojokerto,Jawa Timur,Kota,-7.4667,112.4333,16.47,147686
+Mojokerto,Jawa Timur,Kabupaten,-7.5500,112.4333,1693.9,1119293
+Jombang,Jawa Timur,Kabupaten,-7.5333,112.2333,1063.18,1311394
+Bojonegoro,Jawa Timur,Kabupaten,-7.2167,111.8667,2307.06,1341774
+Tuban,Jawa Timur,Kabupaten,-6.8833,112.0667,1839.8,1195679
+Lamongan,Jawa Timur,Kabupaten,-7.1667,112.3333,1812.8,1205973
+Madiun,Jawa Timur,Kota,-7.6167,111.5167,33.92,170964
+Madiun,Jawa Timur,Kabupaten,-7.6000,111.5333,1017.78,744743
+Ngawi,Jawa Timur,Kabupaten,-7.4500,111.4667,1295.98,670786
+Magetan,Jawa Timur,Kabupaten,-7.6500,111.3333,688.85,620422
+Nganjuk,Jawa Timur,Kabupaten,-7.6000,111.9000,1224.33,1031043
+Kediri,Jawa Timur,Kota,-7.8167,112.0000,63.4,285437
+Kediri,Jawa Timur,Kabupaten,-7.8000,112.0667,1526.96,1530691
+Tulungagung,Jawa Timur,Kabupaten,-8.0667,111.9000,1032.53,1024767
+Blitar,Jawa Timur,Kota,-8.1000,112.1667,32.57,149174
+Blitar,Jawa Timur,Kabupaten,-8.0500,112.1667,1339.73,1269382
+Trenggalek,Jawa Timur,Kabupaten,-8.0500,111.7333,1261.4,743443
+Malang,Jawa Timur,Kota,-7.9667,112.6167,145.28,843810
+Malang,Jawa Timur,Kabupaten,-8.0000,112.6000,3534.86,2654449
+Batu,Jawa Timur,Kota,-7.8722,112.5267,199.09,215061
+Pasuruan,Jawa Timur,Kota,-7.6500,112.7500,35.85,196024
+Pasuruan,Jawa Timur,Kabupaten,-7.7000,112.7000,1474.0,1609121
+Probolinggo,Jawa Timur,Kota,-7.7500,113.2000,56.67,239038
+Probolinggo,Jawa Timur,Kabupaten,-7.8000,113.1000,1696.16,1124707
+Lumajang,Jawa Timur,Kabupaten,-8.1333,113.2333,1790.9,1092822
+Jember,Jawa Timur,Kabupaten,-8.1667,113.6667,3292.34,2536729
+Bondowoso,Jawa Timur,Kabupaten,-7.9167,113.8167,1560.1,776092
+Situbondo,Jawa Timur,Kabupaten,-7.7000,114.0500,1638.5,685817
+Banyuwangi,Jawa Timur,Kabupaten,-8.2167,114.3667,5782.5,1723906
+Pacitan,Jawa Timur,Kabupaten,-8.2167,111.0833,1389.87,592882
+Ponorogo,Jawa Timur,Kabupaten,-7.8667,111.4333,1374.93,1039868
+Bangkalan,Jawa Timur,Kabupaten,-7.0333,112.7833,1260.14,1001859
+Sampang,Jawa Timur,Kabupaten,-7.0667,113.3167,1152.07,964703
+Pamekasan,Jawa Timur,Kabupaten,-7.1667,113.2333,792.24,844851
+Sumenep,Jawa Timur,Kabupaten,-7.0167,113.8667,1998.54,1144126
+Serang,Banten,Kota,-6.1000,106.1667,266.72,677611
+Serang,Banten,Kabupaten,-6.1167,106.1500,1734.28,1622359
+Cilegon,Banten,Kota,-5.9833,106.0000,175.5,434444
+Tangerang,Banten,Kota,-6.1700,106.6300,184.28,1801725
+Tangerang,Banten,Kabupaten,-6.4167,106.6500,1011.86,2838686
+Tangerang Selatan,Banten,Kota,-6.3167,106.7167,147.19,1279184
+Pandeglang,Banten,Kabupaten,-6.3000,106.1000,2746.89,1272687
+Lebak,Banten,Kabupaten,-6.5667,106.2167,3004.83,1419747
