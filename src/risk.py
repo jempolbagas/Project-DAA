@@ -13,12 +13,15 @@ Calculates risk scores based on 7 parameters:
 
 import math
 import pandas as pd
+import numpy as np
+from sklearn.neighbors import BallTree
 
 
 class RiskCalculator:
     """Calculate earthquake risk scores based on multiple parameters."""
     
-
+    # Earth's mean radius in kilometers (for haversine distance calculations)
+    EARTH_RADIUS_KM = 6371.0
 
     # Risk weights for each parameter (total = 1.0)
     WEIGHTS = {
@@ -494,57 +497,105 @@ class RiskCalculator:
         """Calculate Euclidean distance between two points."""
         return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
     
-    @classmethod
-    def find_nearest_fault_distance(cls, lat, lon, faults_data):
+    @staticmethod
+    def build_spatial_tree(dataframe):
         """
-        Find distance to nearest fault line from given coordinates.
+        Build a BallTree spatial index from a dataframe containing 'latitude' and 'longitude'.
+        
+        Uses BallTree with haversine metric for accurate geodesic distance calculations.
+        The haversine metric accounts for Earth's curvature and provides accurate distances
+        between geographic coordinates.
         
         Args:
-            lat: Latitude
-            lon: Longitude  
-            faults_data: DataFrame with fault coordinates
+            dataframe: pandas DataFrame with 'latitude' and 'longitude' columns
             
         Returns:
-            Distance in kilometers to nearest fault
+            sklearn.neighbors.BallTree object, or None if dataframe is empty/None
+            
+        Example:
+            >>> faults_df = pd.DataFrame({'latitude': [-7.0, -7.5], 'longitude': [110.0, 110.5]})
+            >>> tree = RiskCalculator.build_spatial_tree(faults_df)
+            >>> # Use tree.query() to find nearest points
         """
-        if faults_data is None or len(faults_data) == 0:
-            return 200.0  # Default distance if no fault data
+        if dataframe is None or dataframe.empty:
+            return None
+        # Extract coordinates and convert to radians for haversine metric
+        # BallTree expects (lat, lon) in radians for haversine distance
+        coordinates = dataframe[['latitude', 'longitude']].values
+        coordinates_rad = np.radians(coordinates)
+        return BallTree(coordinates_rad, metric='haversine')
+
+    @classmethod
+    def find_nearest_fault_distance(cls, lat, lon, faults_tree):
+        """
+        Find distance to nearest fault line using BallTree spatial query with haversine metric.
         
-        min_distance = float('inf')
+        This method uses the haversine formula via BallTree to calculate accurate geodesic
+        distances on Earth's surface, accounting for the planet's curvature. This is more
+        accurate than simple Euclidean approximation, especially for longer distances.
         
-        for _, fault in faults_data.iterrows():
-            distance = cls.haversine_distance(lat, lon, fault['latitude'], fault['longitude'])
-            min_distance = min(min_distance, distance)
+        Args:
+            lat (float): Latitude of the earthquake location (degrees, -90 to 90)
+            lon (float): Longitude of the earthquake location (degrees, -180 to 180)
+            faults_tree: Pre-built sklearn.neighbors.BallTree object with haversine metric
+            
+        Returns:
+            float: Distance in kilometers to nearest fault line
+            
+        Example:
+            >>> distance = RiskCalculator.find_nearest_fault_distance(-7.0, 110.0, faults_tree)
+            >>> print(f"Distance to fault: {distance:.2f} km")
+        """
+        if faults_tree is None:
+            return 200.0  # Default max distance
         
-        return min_distance if min_distance != float('inf') else 200.0
+        # Convert query point to radians for haversine metric
+        query_point = np.radians([[lat, lon]])
+        
+        # BallTree.query returns (distances, indices)
+        # Distance is in radians; convert to kilometers using Earth's radius
+        dist_rad, _ = faults_tree.query(query_point, k=1)
+        dist_km = dist_rad[0][0] * cls.EARTH_RADIUS_KM
+        
+        return dist_km
     
     @classmethod
-    def find_nearest_volcano_distance(cls, lat, lon, volcanoes_data):
+    def find_nearest_volcano_distance(cls, lat, lon, volcanoes_tree):
         """
-        Find distance to nearest volcano from given coordinates.
+        Find distance to nearest volcano using BallTree spatial query with haversine metric.
+        
+        This method uses the haversine formula via BallTree to calculate accurate geodesic
+        distances on Earth's surface, accounting for the planet's curvature. This is more
+        accurate than simple Euclidean approximation, especially for longer distances.
         
         Args:
-            lat: Latitude
-            lon: Longitude
-            volcanoes_data: DataFrame with volcano coordinates
+            lat (float): Latitude of the earthquake location (degrees, -90 to 90)
+            lon (float): Longitude of the earthquake location (degrees, -180 to 180)
+            volcanoes_tree: Pre-built sklearn.neighbors.BallTree object with haversine metric
             
         Returns:
-            Distance in kilometers to nearest volcano
+            float: Distance in kilometers to nearest volcano
+            
+        Example:
+            >>> distance = RiskCalculator.find_nearest_volcano_distance(-7.0, 110.0, volcanoes_tree)
+            >>> print(f"Distance to volcano: {distance:.2f} km")
         """
-        if volcanoes_data is None or len(volcanoes_data) == 0:
-            return 150.0  # Default distance if no volcano data
+        if volcanoes_tree is None:
+            return 150.0  # Default max distance
         
-        min_distance = float('inf')
+        # Convert query point to radians for haversine metric
+        query_point = np.radians([[lat, lon]])
         
-        for _, volcano in volcanoes_data.iterrows():
-            distance = cls.haversine_distance(lat, lon, volcano['latitude'], volcano['longitude'])
-            min_distance = min(min_distance, distance)
+        # BallTree.query returns (distances, indices)
+        # Distance is in radians; convert to kilometers using Earth's radius
+        dist_rad, _ = volcanoes_tree.query(query_point, k=1)
+        dist_km = dist_rad[0][0] * cls.EARTH_RADIUS_KM
         
-        return min_distance if min_distance != float('inf') else 150.0
+        return dist_km
     
     @classmethod
     def calculate_enhanced_risk_score(cls, magnitude, depth, intensity, frequency,
-                                    lat, lon, faults_data=None, volcanoes_data=None, 
+                                    lat, lon, faults_tree=None, volcanoes_tree=None,
                                     plate_zone=1):
         """
         Calculate comprehensive risk score (0-100) with geological data integration.
@@ -558,16 +609,16 @@ class RiskCalculator:
             frequency: Events per year
             lat: Latitude for distance calculations
             lon: Longitude for distance calculations
-            faults_data: DataFrame with fault data
-            volcanoes_data: DataFrame with volcano data
+            faults_tree: BallTree object for faults (with haversine metric)
+            volcanoes_tree: BallTree object for volcanoes (with haversine metric)
             plate_zone: Zone type (0=stable, 1=boundary, 2=subduction)
             
         Returns:
             Risk score (0-100)
         """
-        # Calculate actual distances using Haversine formula
-        fault_distance = cls.find_nearest_fault_distance(lat, lon, faults_data)
-        volcano_distance = cls.find_nearest_volcano_distance(lat, lon, volcanoes_data)
+        # Calculate actual distances using BallTree with haversine metric
+        fault_distance = cls.find_nearest_fault_distance(lat, lon, faults_tree)
+        volcano_distance = cls.find_nearest_volcano_distance(lat, lon, volcanoes_tree)
         
         # Normalize all parameters according to blueprint
         norm_magnitude = cls.normalize_magnitude(magnitude)

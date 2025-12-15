@@ -63,8 +63,8 @@ def load_geological_data(faults_filepath, volcanoes_filepath):
 
 
 
-def calculate_risk_scores(df, faults_data=None, volcanoes_data=None):
-    """Calculate risk scores for all data points using enhanced geological data."""
+def calculate_risk_scores(df, faults_tree=None, volcanoes_tree=None):
+    """Calculate risk scores for all data points using enhanced geological data (KDTree)."""
     print("\nCalculating enhanced risk scores with geological data...")
     risk_scores = []
     fault_distances = []
@@ -79,18 +79,18 @@ def calculate_risk_scores(df, faults_data=None, volcanoes_data=None):
             frequency=row['frequency'],
             lat=row['latitude'],
             lon=row['longitude'],
-            faults_data=faults_data,
-            volcanoes_data=volcanoes_data,
+            faults_tree=faults_tree,
+            volcanoes_tree=volcanoes_tree,
             plate_zone=row['plate_zone']
         )
         risk_scores.append(score)
         
         # Calculate and store distances for analysis
         fault_dist = RiskCalculator.find_nearest_fault_distance(
-            row['latitude'], row['longitude'], faults_data
+            row['latitude'], row['longitude'], faults_tree
         )
         volcano_dist = RiskCalculator.find_nearest_volcano_distance(
-            row['latitude'], row['longitude'], volcanoes_data
+            row['latitude'], row['longitude'], volcanoes_tree
         )
         fault_distances.append(fault_dist)
         volcano_distances.append(volcano_dist)
@@ -572,9 +572,14 @@ def main():
         'data/faults_data.csv', 
         'data/volcanoes_data.csv'
     )
+
+    # Build geological spatial trees
+    print("\nBuilding geological spatial trees...")
+    faults_tree = RiskCalculator.build_spatial_tree(faults_data)
+    volcanoes_tree = RiskCalculator.build_spatial_tree(volcanoes_data)
     
     # Calculate enhanced risk scores with geological data
-    df = calculate_risk_scores(df, faults_data, volcanoes_data)
+    df = calculate_risk_scores(df, faults_tree, volcanoes_tree)
     
     # Build QuadTree
     qt = build_quadtree(df)
